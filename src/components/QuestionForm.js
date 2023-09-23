@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import QuestionList from "./QuestionList";
 
 function QuestionForm(props) {
   const [formData, setFormData] = useState({
@@ -20,6 +21,22 @@ function QuestionForm(props) {
   function handleSubmit(event) {
     event.preventDefault();
     console.log(formData);
+
+    const formDataFix = {
+      prompt: formData.prompt,
+      answers: [formData.answer1,formData.answer2,
+        formData.answer3,formData.answer4 ],
+        correctIndex: formData.correctIndex
+    }
+
+    fetch("http://localhost:4000/questions", {
+      method: "POST",
+      headers: {"Content-type": "application/json"},
+      body: JSON.stringify(formDataFix)
+  }).then (r => r.json()).then(QuestionData => {
+  props.onAddQuestion(QuestionData)
+  console.log(QuestionData)
+  })
   }
 
   return (
